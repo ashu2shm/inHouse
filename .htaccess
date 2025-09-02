@@ -1,0 +1,29 @@
+RewriteEngine On
+
+# Redirect index.php to root
+RewriteCond %{THE_REQUEST} \s/index(\.php)?[\s?] [NC]
+RewriteRule ^index(\.php)?$ https://mbbs-in-russia.in/ [R=301,L]
+
+# Redirect *.php to extensionless URL
+RewriteCond %{THE_REQUEST} \s/(.+?)\.php[\s?] [NC]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+?)\.php$ /$1 [R=301,L]
+
+# ✅ Redirect trailing slashes from NON-directories
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Internally rewrite extensionless URLs to .php files
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+# ✅ Redirect any extra garbage after a valid PHP slug to home
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/(.+)/.+$
+RewriteRule ^ https://mbbs-in-russia.in/ [R=301,L]
+
+# Custom 404 redirection
+ErrorDocument 404 https://mbbs-in-russia.in/
